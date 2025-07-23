@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, s
 from PyPDF2 import PdfReader, PdfWriter
 from pathlib import Path
 from matplotlib import pyplot as plt
+from mplfonts import use_font
 
 app = Flask(__name__)
 app.secret_key = 'labelimage'
@@ -80,12 +81,14 @@ def download_pdf():
 
 
 def generate_watermark(text: str) -> Path:
-    wm_file = Path('rl_watermark.pdf').absolute()
+    # wm_file = Path('rl_watermark.pdf').absolute()
+    wm_file = Path(hex(id(text))+'.pdf').resolve()
     # a4
     fig = plt.figure(1, figsize=(8.27, 11.69), dpi=300)
     wrap_text = textwrap.fill(text, width=60)
+    use_font('Source Han Serif SC')
     fig.text(0.05, 0.05, wrap_text, rotation=45, alpha=0.2, color=(0, 0.5, 1),
-             rasterized=True, font={'size': 100, 'family': 'SimHei'})
+             rasterized=True, font={'size': 200,})
     plt.savefig(wm_file, transparent=True)
     return wm_file
 
